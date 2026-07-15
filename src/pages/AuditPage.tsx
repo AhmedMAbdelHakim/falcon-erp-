@@ -1,0 +1,9 @@
+import { useCallback, useEffect, useState } from 'react'
+import { RefreshCw } from 'lucide-react'
+import { DataTable, type DataRow } from '../components/ui/DataTable'
+import { PageHeader } from '../components/ui/PageHeader'
+import { PageState } from '../components/ui/PageState'
+import { useAuth } from '../context/AuthContext'
+import { readAudit, type AuditEventRow } from '../server/queries/read-models'
+const columns = [{ key: 'occurred_at', label: 'الوقت', kind: 'datetime' as const }, { key: 'event_category', label: 'الفئة' }, { key: 'action', label: 'الإجراء' }, { key: 'result', label: 'النتيجة', kind: 'status' as const }, { key: 'subject_type', label: 'نوع السجل' }, { key: 'reason', label: 'السبب' }, { key: 'correlation_id', label: 'معرف التتبع' }]
+export function AuditPage() { const { access } = useAuth(); const [rows, setRows] = useState<AuditEventRow[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null); const load = useCallback(async () => { if (!access) return; setLoading(true); setError(null); try { setRows(await readAudit(access.organization_id)) } catch (caught) { setError(caught instanceof Error ? caught.message : 'تعذر تحميل التدقيق') } finally { setLoading(false) } }, [access]); useEffect(() => { void load() }, [load]); return <div className="page"><PageHeader title="سجل التدقيق" description="أحداث أمنية ومالية وتشغيلية غير قابلة للحذف مع معرفات التتبع." actions={<button className="button secondary" type="button" onClick={() => void load()}><RefreshCw size={16} />تحديث</button>} />{loading ? <PageState kind="loading" /> : error ? <PageState kind="error" message={error} onRetry={() => void load()} /> : rows.length === 0 ? <PageState kind="empty" /> : <DataTable columns={columns} rows={rows as unknown as DataRow[]} page={0} pageSize={100} total={rows.length} onPageChange={() => undefined} />}</div> }
