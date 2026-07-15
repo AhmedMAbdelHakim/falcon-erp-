@@ -107,6 +107,7 @@ main { width: 100%; padding: 24px; }
 
 .button, .icon-button { border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
 .button { min-height: 38px; padding: 8px 13px; border-radius: 5px; font-size: 12px; font-weight: 700; }
+.button.compact-button { min-height: 30px; padding: 5px 9px; font-size: 11px; white-space: nowrap; }
 .button.primary { color: #f4ead8; background: var(--accent); }
 .button.primary:hover { background: color-mix(in srgb, var(--accent) 85%, black); }
 .button.secondary { color: var(--text); background: var(--surface); border: 1px solid var(--border); }

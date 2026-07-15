@@ -10,14 +10,46 @@ export interface ResourceConfig {
   description: string
   source: PublicTable | PublicView
   permission: readonly string[]
+  editable?: EditableResourceConfig
   searchColumns?: readonly string[]
   statusColumn?: string
   columns: readonly DataColumn[]
 }
 
+export interface EditableField {
+  key: string
+  label: string
+  kind?: 'text' | 'number' | 'boolean' | 'date' | 'select'
+  required?: boolean
+  options?: readonly { value: string; label: string }[]
+}
+
+export interface EditableResourceConfig {
+  table: PublicTable
+  idKey?: string
+  createPermission: string
+  updatePermission: string
+  fields: readonly EditableField[]
+}
+
 export const resourceCatalog: Record<string, ResourceConfig> = {
   customers: {
     key: 'customers', title: 'العملاء', description: 'بيانات العملاء المعتمدة ونطاق الإسناد التشغيلي.', source: 'customers', permission: ['customers.read'],
+    editable: {
+      table: 'customers',
+      createPermission: 'customers.create',
+      updatePermission: 'customers.update',
+      fields: [
+        { key: 'customer_number', label: 'رقم العميل', required: true },
+        { key: 'full_name', label: 'اسم العميل', required: true },
+        { key: 'phone_original', label: 'الهاتف' },
+        { key: 'phone_normalized', label: 'الهاتف الدولي' },
+        { key: 'alternate_phone_original', label: 'هاتف بديل' },
+        { key: 'alternate_phone_normalized', label: 'الهاتف البديل الدولي' },
+        { key: 'notes', label: 'ملاحظات' },
+        { key: 'is_active', label: 'نشط', kind: 'boolean' },
+      ],
+    },
     searchColumns: ['customer_number', 'full_name', 'phone_normalized'], statusColumn: 'is_active',
     columns: [
       { key: 'customer_number', label: 'رقم العميل' }, { key: 'full_name', label: 'الاسم' },
@@ -64,6 +96,23 @@ export const resourceCatalog: Record<string, ResourceConfig> = {
   },
   suppliers: {
     key: 'suppliers', title: 'حساب الموردين', description: 'الفواتير والمدفوعات والرصيد المفتوح من العرض المعتمد.', source: 'supplier_payable_summary', permission: ['supplier_invoices.create', 'supplier_invoices.approve', 'orders.read'],
+    editable: {
+      table: 'suppliers',
+      idKey: 'supplier_id',
+      createPermission: 'supplier_invoices.create',
+      updatePermission: 'supplier_invoices.create',
+      fields: [
+        { key: 'supplier_code', label: 'كود المورد', required: true },
+        { key: 'display_name', label: 'اسم المورد', required: true },
+        { key: 'legal_name', label: 'الاسم القانوني' },
+        { key: 'contact_name', label: 'مسؤول التواصل' },
+        { key: 'phone_original', label: 'الهاتف' },
+        { key: 'phone_normalized', label: 'الهاتف الدولي' },
+        { key: 'payment_terms_days', label: 'أيام السداد', kind: 'number' },
+        { key: 'notes', label: 'ملاحظات' },
+        { key: 'is_active', label: 'نشط', kind: 'boolean' },
+      ],
+    },
     columns: [
       { key: 'supplier_id', label: 'المورد' }, { key: 'invoiced_minor', label: 'الفواتير', kind: 'money' },
       { key: 'paid_minor', label: 'المدفوع', kind: 'money' }, { key: 'open_payable_minor', label: 'المستحق', kind: 'money' },
@@ -86,6 +135,27 @@ export const resourceCatalog: Record<string, ResourceConfig> = {
   },
   inventoryLocations: {
     key: 'inventoryLocations', title: 'مواقع المخزون', description: 'مواقع التخزين والعهدة المعتمدة داخل Falcon وخارجها.', source: 'inventory_locations', permission: ['orders.read'],
+    editable: {
+      table: 'inventory_locations',
+      createPermission: 'print_batches.create',
+      updatePermission: 'print_batches.create',
+      fields: [
+        { key: 'code', label: 'كود الموقع', required: true },
+        { key: 'name', label: 'اسم الموقع', required: true },
+        { key: 'location_kind', label: 'نوع الموقع', kind: 'select', required: true, options: [
+          { value: 'falcon_storage', label: 'مخزن Falcon' },
+          { value: 'printer', label: 'المطبعة' },
+          { value: 'packing', label: 'التغليف' },
+          { value: 'courier', label: 'شركة الشحن' },
+          { value: 'return_inspection', label: 'فحص المرتجعات' },
+          { value: 'resellable_returns', label: 'مرتجعات قابلة للبيع' },
+          { value: 'damaged', label: 'تالف' },
+          { value: 'consumed', label: 'مستهلك' },
+        ] },
+        { key: 'permits_negative_on_hand', label: 'يسمح بسالب مؤقت', kind: 'boolean' },
+        { key: 'is_active', label: 'نشط', kind: 'boolean' },
+      ],
+    },
     searchColumns: ['location_code', 'display_name'], statusColumn: 'is_active', columns: [
       { key: 'location_code', label: 'الكود' }, { key: 'display_name', label: 'الموقع' },
       { key: 'location_type', label: 'النوع' }, { key: 'is_active', label: 'نشط', kind: 'status' },
@@ -117,6 +187,29 @@ export const resourceCatalog: Record<string, ResourceConfig> = {
   },
   wallets: {
     key: 'wallets', title: 'المحافظ', description: 'تعريف المحافظ وحالة التحصيل التشغيلية. الرصيد المالي المعتمد يظهر في تقرير السيولة.', source: 'wallet_balance_summary', permission: ['wallets.read_summary', 'ledger.read'],
+    editable: {
+      table: 'wallets',
+      idKey: 'wallet_id',
+      createPermission: 'wallets.transfer',
+      updatePermission: 'wallets.transfer',
+      fields: [
+        { key: 'code', label: 'كود المحفظة', required: true },
+        { key: 'name', label: 'اسم المحفظة', required: true },
+        { key: 'provider', label: 'المزود', required: true },
+        { key: 'wallet_type', label: 'نوع المحفظة', kind: 'select', required: true, options: [
+          { value: 'personal_wallet_dedicated_to_business', label: 'محفظة شخصية مخصصة للعمل' },
+          { value: 'business_wallet', label: 'محفظة أعمال' },
+          { value: 'bank_account', label: 'حساب بنكي' },
+          { value: 'cash', label: 'نقدية' },
+          { value: 'clearing', label: 'تسوية' },
+        ] },
+        { key: 'registered_owner_name', label: 'اسم المالك المسجل', required: true },
+        { key: 'economic_owner_name', label: 'المالك الاقتصادي', required: true },
+        { key: 'external_identifier_last4', label: 'آخر 4 أرقام' },
+        { key: 'notes', label: 'ملاحظات' },
+        { key: 'is_active', label: 'نشطة', kind: 'boolean' },
+      ],
+    },
     searchColumns: ['code', 'name', 'provider'], statusColumn: 'is_active', columns: [
       { key: 'code', label: 'الكود' }, { key: 'name', label: 'المحفظة' }, { key: 'provider', label: 'المزود' },
       { key: 'confirmed_customer_receipts_minor', label: 'تحصيلات مؤكدة', kind: 'money' }, { key: 'last_confirmed_receipt_at', label: 'آخر تحصيل', kind: 'datetime' },
@@ -141,6 +234,34 @@ export const resourceCatalog: Record<string, ResourceConfig> = {
   },
   employees: {
     key: 'employees', title: 'الموظفون', description: 'ملف الموظف التشغيلي ضمن نطاق صلاحيات الرواتب.', source: 'employees', permission: ['payroll.read_all', 'payroll.read_own_scope'],
+    editable: {
+      table: 'employees',
+      createPermission: 'payroll.read_all',
+      updatePermission: 'payroll.read_all',
+      fields: [
+        { key: 'employee_no', label: 'كود الموظف', required: true },
+        { key: 'full_name', label: 'اسم الموظف', required: true },
+        { key: 'employee_kind', label: 'نوع الموظف', kind: 'select', required: true, options: [
+          { value: 'moderator', label: 'مودريتور' },
+          { value: 'operations', label: 'تشغيل' },
+          { value: 'finance', label: 'مالي' },
+          { value: 'management', label: 'إدارة' },
+          { value: 'other', label: 'أخرى' },
+        ] },
+        { key: 'status', label: 'الحالة', kind: 'select', required: true, options: [
+          { value: 'draft', label: 'مسودة' },
+          { value: 'active', label: 'نشط' },
+          { value: 'on_leave', label: 'إجازة' },
+          { value: 'terminated', label: 'منتهي' },
+          { value: 'inactive', label: 'غير نشط' },
+        ] },
+        { key: 'hire_date', label: 'تاريخ التعيين', kind: 'date', required: true },
+        { key: 'termination_date', label: 'تاريخ الانتهاء', kind: 'date' },
+        { key: 'payment_recipient_name', label: 'اسم مستلم الدفع' },
+        { key: 'payment_recipient_reference', label: 'مرجع الدفع' },
+        { key: 'payroll_enabled', label: 'تفعيل الرواتب', kind: 'boolean' },
+      ],
+    },
     searchColumns: ['employee_number', 'full_name'], statusColumn: 'status', columns: [
       { key: 'employee_number', label: 'الكود' }, { key: 'full_name', label: 'الاسم' },
       { key: 'employee_type', label: 'النوع' }, { key: 'status', label: 'الحالة', kind: 'status' }, { key: 'hire_date', label: 'تاريخ التعيين', kind: 'date' },
@@ -163,6 +284,17 @@ export const resourceCatalog: Record<string, ResourceConfig> = {
   },
   partners: {
     key: 'partners', title: 'حسابات الشركاء', description: 'رأس المال والحساب الجاري والتوزيعات والمسحوبات ضمن نطاق الشريك المعتمد.', source: 'partner_account_summary', permission: ['partner_withdrawals.request', 'partner_withdrawals.approve', 'ledger.read'],
+    editable: {
+      table: 'partners',
+      idKey: 'partner_id',
+      createPermission: 'partners.capital.record',
+      updatePermission: 'partners.capital.record',
+      fields: [
+        { key: 'partner_code', label: 'كود الشريك', required: true },
+        { key: 'full_name', label: 'اسم الشريك', required: true },
+        { key: 'is_active', label: 'نشط', kind: 'boolean' },
+      ],
+    },
     searchColumns: ['partner_code', 'full_name'], columns: [
       { key: 'partner_code', label: 'الكود' }, { key: 'full_name', label: 'الشريك' },
       { key: 'capital_and_current_minor', label: 'رأس المال والجاري', kind: 'money' }, { key: 'allocated_profit_minor', label: 'الأرباح المخصصة', kind: 'money' },
