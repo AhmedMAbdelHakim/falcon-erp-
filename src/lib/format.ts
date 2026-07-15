@@ -1,7 +1,7 @@
 import { formatEgp, minorUnits } from './money'
 
 export function formatMinor(value: string | number | bigint | null | undefined): string {
-  if (value === null || value === undefined) return '�'
+  if (value === null || value === undefined) return '-'
   try {
     return formatEgp(minorUnits(value), 'ar-EG').replace(' EGP', ' ج.م')
   } catch {
@@ -10,7 +10,7 @@ export function formatMinor(value: string | number | bigint | null | undefined):
 }
 
 export function formatDate(value: string | null | undefined, withTime = false): string {
-  if (!value) return '�'
+  if (!value) return '-'
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
   return new Intl.DateTimeFormat('ar-EG', {
@@ -21,7 +21,7 @@ export function formatDate(value: string | null | undefined, withTime = false): 
 }
 
 export function formatValue(value: unknown, key = ''): string {
-  if (value === null || value === undefined || value === '') return '�'
+  if (value === null || value === undefined || value === '') return '-'
   if (key.endsWith('_minor')) return formatMinor(value as string | number | bigint)
   if (key.endsWith('_at') || key.endsWith('_date')) return formatDate(String(value), key.endsWith('_at'))
   if (typeof value === 'boolean') return value ? 'نعم' : 'لا'
