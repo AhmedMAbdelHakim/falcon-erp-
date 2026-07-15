@@ -80,6 +80,12 @@ export function ResourcePage({ resourceKey }: { resourceKey: string }) {
     setAppliedSearch(search)
   }
 
+  function clearSearch() {
+    setSearch('')
+    setAppliedSearch('')
+    setPage(0)
+  }
+
   function openCreate() {
     setEditingRow(null)
     dialog.current?.showModal()
@@ -140,6 +146,12 @@ export function ResourcePage({ resourceKey }: { resourceKey: string }) {
           <button type="submit" className="button secondary">بحث</button>
         </div>
         <span className="environment-pill">{count ?? rows.length} سجل</span>
+        {search || appliedSearch ? (
+          <button type="button" className="button secondary compact-button" onClick={clearSearch}>
+            <X size={14} aria-hidden="true" />
+            مسح البحث
+          </button>
+        ) : null}
       </form>
       {loading ? <PageState kind="loading" /> : error ? <PageState kind="error" message={error} onRetry={() => void load()} /> : rows.length === 0 ? <PageState kind="empty" /> : (
         <DataTable columns={tableColumns} rows={rows} page={page} pageSize={PAGE_SIZE} total={count} onPageChange={setPage} />

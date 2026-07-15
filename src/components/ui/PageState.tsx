@@ -10,8 +10,8 @@ interface PageStateProps {
 }
 
 const defaults = {
-  loading: ['جارٍ تحميل البيانات', 'يتم جلب أحدث حالة معتمدة من الخادم.', LoaderCircle],
-  empty: ['لا توجد بيانات', 'لا توجد سجلات مطابقة للفلاتر الحالية.', Inbox],
+  loading: ['جاري تحميل البيانات', 'يتم جلب أحدث حالة معتمدة من الخادم.', LoaderCircle],
+  empty: ['لا توجد بيانات', 'لا توجد سجلات مطابقة للبحث أو الفلاتر الحالية.', Inbox],
   error: ['تعذر تحميل البيانات', 'لم يتم تغيير أي بيانات. حاول التحديث بعد التحقق من الاتصال.', AlertTriangle],
   denied: ['غير مصرح', 'لا يملك حسابك الصلاحية المطلوبة لعرض هذه الصفحة.', Ban],
 } as const
@@ -20,8 +20,10 @@ export function PageState({ kind, title, message, onRetry, icon }: PageStateProp
   const [defaultTitle, defaultMessage, DefaultIcon] = defaults[kind]
   const Icon = icon ?? DefaultIcon
   return (
-    <div className="page-state" role={kind === 'error' ? 'alert' : 'status'}>
-      <Icon className={kind === 'loading' ? 'spin' : ''} aria-hidden="true" />
+    <div className={`page-state ${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
+      <span className="page-state-icon">
+        <Icon className={kind === 'loading' ? 'spin' : ''} aria-hidden="true" />
+      </span>
       <h2>{title ?? defaultTitle}</h2>
       <p>{message ?? defaultMessage}</p>
       {onRetry ? (

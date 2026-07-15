@@ -132,11 +132,13 @@ main { width: 100%; padding: 16px; }
 .button.secondary { color: var(--text); background: var(--surface); border: 1px solid var(--border); }
 .button.secondary:hover { background: var(--surface-hover); }
 .button.danger { color: var(--danger); background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 25%, transparent); }
+.button:active, .icon-button:active { transform: translateY(1px); }
 .icon-button { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 4px; color: var(--muted); background: transparent; }
 .icon-button:hover { color: var(--text); background: var(--surface-hover); }
 
 .toolbar { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 9px; background: var(--surface); border: 1px solid var(--border); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
 .toolbar-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.toolbar-meta { display: flex; align-items: center; justify-content: flex-end; gap: 6px; flex-wrap: wrap; }
 .field, .search-field { min-height: 33px; color: var(--text); background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
 .field { padding: 6px 9px; }
 .search-field { min-width: 250px; display: flex; align-items: center; gap: 8px; padding: 0 10px; }
@@ -147,7 +149,8 @@ main { width: 100%; padding: 16px; }
 table { width: 100%; min-width: 780px; border-collapse: collapse; font-size: 12px; }
 th { position: sticky; top: 0; z-index: 1; padding: 9px 11px; color: var(--muted); background: var(--table-head); border-bottom: 1px solid var(--border); text-align: right; font-weight: 800; white-space: nowrap; }
 td { max-width: 320px; padding: 9px 11px; border-bottom: 1px solid var(--border); vertical-align: middle; overflow-wrap: anywhere; }
-tbody tr:hover { background: var(--surface-hover); }
+tbody tr { transition: background .14s ease, box-shadow .14s ease; }
+tbody tr:hover { background: var(--surface-hover); box-shadow: inset -3px 0 var(--accent); }
 tbody tr:last-child td { border-bottom: 0; }
 .table-pagination { min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; color: var(--muted); border-top: 1px solid var(--border); font-size: 11px; }
 .table-pagination div { display: flex; gap: 4px; }
@@ -159,7 +162,9 @@ tbody tr:last-child td { border-bottom: 0; }
 .status-badge.warning { color: var(--warning); background: var(--warning-soft); border-color: color-mix(in srgb, var(--warning) 25%, transparent); }
 
 .page-state { min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
-.page-state > svg { width: 30px; height: 30px; color: var(--faint); }
+.page-state-icon { width: 44px; height: 44px; display: grid; place-items: center; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--border); border-radius: 50%; }
+.page-state-icon svg { width: 24px; height: 24px; }
+.page-state.error .page-state-icon, .page-state.denied .page-state-icon { color: var(--danger); background: var(--danger-soft); }
 .page-state h2 { margin: 13px 0 0; font-size: 16px; }
 .page-state p { max-width: 460px; margin: 7px 0 18px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .spin { animation: spin .9s linear infinite; }
@@ -172,6 +177,8 @@ tbody tr:last-child td { border-bottom: 0; }
 .kpi small { display: block; margin-top: 5px; color: var(--faint); font-size: 10px; }
 .content-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 12px; }
 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 0 rgba(23, 17, 14, .04); }
+.panel, .kpi, .quick-link-card, .health-card { transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease; }
+.kpi:hover, .quick-link-card:hover, .health-card:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 17, 14, .08); }
 .panel-header { min-height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border-bottom: 1px solid var(--border); background: var(--surface-subtle); }
 .panel-header h2 { margin: 0; font-size: 14px; font-weight: 800; }
 .panel-body { padding: 12px; }
