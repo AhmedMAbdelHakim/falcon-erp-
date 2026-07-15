@@ -43,7 +43,7 @@ export function DataTable({ columns, rows, page, pageSize, total, onPageChange, 
           <tbody>
             {rows.map((row, index) => (
               <tr key={String(row.id ?? row.order_id ?? row.settlement_id ?? `${page}-${index}`)} aria-label={rowLabel?.(row)}>
-                {columns.map((column) => <td key={column.key}><Cell column={column} row={row} /></td>)}
+                {columns.map((column) => <td key={column.key} data-label={column.label}><Cell column={column} row={row} /></td>)}
               </tr>
             ))}
           </tbody>
