@@ -39,41 +39,39 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Toast Portal Container */}
       <div className="fixed bottom-5 left-5 z-50 flex flex-col gap-2.5 max-w-md w-full no-print">
         {toasts.map((toast) => {
-          let bg = 'bg-white text-slate-800 border-slate-200';
           let Icon = CheckCircle2;
-          let iconColor = 'text-emerald-500';
+          const style = {
+            backgroundColor: '#fff8ec',
+            color: '#17110e',
+            borderColor: '#d7bea0',
+            direction: 'rtl' as const,
+          };
+          const iconStyle = { color: '#7a1621' };
 
           if (toast.type === 'success') {
-            bg = 'bg-emerald-50 text-emerald-900 border-emerald-200';
             Icon = CheckCircle2;
-            iconColor = 'text-emerald-500';
           } else if (toast.type === 'error') {
-            bg = 'bg-red-50 text-red-900 border-red-200';
             Icon = XCircle;
-            iconColor = 'text-red-500';
           } else if (toast.type === 'warning') {
-            bg = 'bg-amber-50 text-amber-900 border-amber-200';
             Icon = AlertTriangle;
-            iconColor = 'text-amber-500';
           } else if (toast.type === 'info') {
-            bg = 'bg-blue-50 text-blue-900 border-blue-200';
             Icon = InfoIcon;
-            iconColor = 'text-blue-500';
           }
 
           return (
             <div
               key={toast.id}
-              className={`flex items-start gap-3 p-4 rounded-xl border shadow-lg transition-all duration-300 transform translate-y-0 animate-slide-up ${bg}`}
-              style={{ direction: 'rtl' }}
+              className="flex items-start gap-3 p-4 rounded border shadow-lg transition-all duration-300 transform translate-y-0 animate-slide-up"
+              style={style}
             >
-              <Icon className={`mt-0.5 shrink-0 ${iconColor}`} size={18} />
+              <Icon className="mt-0.5 shrink-0" style={iconStyle} size={18} />
               <div className="flex-grow text-xs font-semibold leading-relaxed">
                 {toast.message}
               </div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-slate-400 hover:text-slate-600 transition-colors p-0.5 rounded"
+                className="transition-colors p-0.5 rounded"
+                style={{ color: '#7a1621' }}
               >
                 <X size={14} />
               </button>
