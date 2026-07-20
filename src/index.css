@@ -282,6 +282,11 @@ tbody tr:last-child td { border-bottom: 0; }
 .command-fields input:not([type="checkbox"]), .command-fields select, .command-fields textarea { width: 100%; min-height: 36px; padding: 7px 9px; color: var(--text); background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; font: inherit; }
 .command-fields textarea { resize: vertical; font-family: Consolas, monospace; font-size: 11px; }
 .command-fields .check-field { display: flex; align-items: center; grid-template-columns: none; gap: 8px; align-self: end; min-height: 36px; padding: 8px 9px; color: var(--text); background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 4px; }
+.quick-entry-note { display: flex; align-items: center; gap: 8px; margin: 12px 14px 0; padding: 10px 12px; color: var(--muted); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border)); border-radius: var(--radius); font-size: 12px; line-height: 1.6; }
+.quick-entry-note svg { color: var(--accent); flex: 0 0 auto; }
+.optional-fields { margin: 0 14px 14px; border: 1px dashed var(--border); border-radius: var(--radius); background: var(--surface-subtle); }
+.optional-fields summary { min-height: 38px; display: flex; align-items: center; padding: 8px 10px; color: var(--muted); cursor: pointer; font-size: 12px; font-weight: 800; }
+.optional-fields .command-fields { padding: 10px; max-height: 42vh; }
 .command-result { min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 28px; text-align: center; }
 .command-result > svg { color: var(--teal); }
 .command-result span { margin-top: 10px; color: var(--muted); font-size: 10px; }
