@@ -72,6 +72,8 @@ export function Dashboard() {
         actions={<button className="button secondary" type="button" onClick={() => void load()}><RefreshCw size={16} />تحديث</button>}
       />
 
+      <GettingStarted quickLinks={quickLinks} />
+
       {!canReadFinance ? (
         <OperationalHome quickLinks={quickLinks} />
       ) : !summary ? (
@@ -134,6 +136,27 @@ export function Dashboard() {
         </>
       )}
     </div>
+  )
+}
+
+function GettingStarted({ quickLinks }: { quickLinks: QuickLinkItem[] }) {
+  const firstLinks = quickLinks.slice(0, 3)
+  return (
+    <section className="getting-started panel" aria-label="طريقة استخدام سريعة">
+      <div>
+        <span className="eyebrow">ابدأ من هنا</span>
+        <h2>استخدم السيستم ببساطة</h2>
+        <p>اكتب أقل بيانات ممكنة. أي كود أو تاريخ أو حالة يقدر السيستم يكملها تلقائيًا.</p>
+      </div>
+      <ol>
+        <li>افتح الجزء المطلوب من الاختصارات.</li>
+        <li>اضغط إضافة سريعة واكتب الاسم أو البيان الأساسي فقط.</li>
+        <li>لو محتاج تفاصيل، افتح بيانات إضافية اختيارية.</li>
+      </ol>
+      <div className="start-actions">
+        {firstLinks.map((item) => <NavLink key={item.path} className="button secondary compact-button" to={item.path}>{item.label}</NavLink>)}
+      </div>
+    </section>
   )
 }
 
